@@ -10,9 +10,9 @@ PROJECT( ExampleContent )
 
 
 # project version
-SET( ExampleContent_VERSION_MAJOR 01 )
+SET( ExampleContent_VERSION_MAJOR 02 )
 SET( ExampleContent_VERSION_MINOR 00 )
-SET( ExampleContent_VERSION_PATCH 01 )
+SET( ExampleContent_VERSION_PATCH 00 )
 
 
 ### CMAKE ###################################################################
@@ -43,12 +43,16 @@ IF( NOT COMPILER_SUPPORTS_CXX_FLAGS )
     MESSAGE( FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} does not support cxx flags ${CMAKE_CXX_FLAGS}" )
 ENDIF()
 
-SET( CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -ansi -pedantic -Wno-long-long -Wno-sign-compare -Wshadow -fno-strict-aliasing ${CMAKE_CXX_FLAGS}" )
+if( APPLE )
+    SET( CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -Wno-long-long -Wno-sign-compare -fno-strict-aliasing ${CMAKE_CXX_FLAGS}" )
+else()
+    SET( CMAKE_CXX_FLAGS "-Wall -Werror -ansi -pedantic -Wno-long-long -Wno-sign-compare -fno-strict-aliasing ${CMAKE_CXX_FLAGS}" )
+endif()
 
 
 ### DEPENDENCIES ############################################################
 
-FIND_PACKAGE( PandoraSDK 01.00.00 REQUIRED )
+FIND_PACKAGE( PandoraSDK 02.00.00 REQUIRED )
 
 FOREACH( pkg PandoraSDK )
     IF( ${pkg}_FOUND )
@@ -61,7 +65,7 @@ ENDFOREACH()
 IF( PANDORA_MONITORING )
     LIST( APPEND CMAKE_MODULE_PATH "$ENV{ROOTSYS}/etc/cmake/" )
     ADD_DEFINITIONS( "-DMONITORING" )
-    FIND_PACKAGE( PandoraMonitoring 01.00.00 REQUIRED )
+    FIND_PACKAGE( PandoraMonitoring 02.00.00 REQUIRED )
     FIND_PACKAGE( ROOT 5.26.00 REQUIRED COMPONENTS Eve Geom RGL EG ) # minimum required ROOT version
 
     FOREACH( pkg PandoraMonitoring ROOT )
